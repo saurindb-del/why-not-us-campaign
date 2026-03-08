@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Why Not Us? | Rethink Stigma</title>
+  <meta name="description" content="A mental health campaign for teenage boys — challenging the myth that seeking help means weakness.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
   <style>
     /* ========== RESET & BASE ========== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,12 +23,13 @@
       --white: #ffffff;
       --gray-text: #8899aa;
       --body-text: #c8d6e5;
+      --red: #e74c3c;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
       background: var(--navy);
       color: var(--body-text);
       line-height: 1.7;
@@ -31,8 +37,76 @@
     }
 
     img { max-width: 100%; display: block; }
-
     a { text-decoration: none; color: inherit; }
+
+    /* ========== PAGE LOADER ========== */
+    .page-loader {
+      position: fixed;
+      inset: 0;
+      background: var(--navy);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 2px;
+    }
+
+    .loader-text span { color: var(--teal); }
+
+    .loader-bar {
+      width: 120px;
+      height: 3px;
+      background: rgba(26,188,156,0.2);
+      border-radius: 3px;
+      margin: 1rem auto 0;
+      overflow: hidden;
+    }
+
+    .loader-bar::after {
+      content: '';
+      display: block;
+      width: 60%;
+      height: 100%;
+      background: var(--teal);
+      border-radius: 3px;
+      animation: loading 0.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes loading {
+      from { transform: translateX(-20px); }
+      to { transform: translateX(80px); }
+    }
+
+    /* ========== SCROLL REVEAL ========== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
 
     /* ========== NAVIGATION ========== */
     nav {
@@ -41,9 +115,14 @@
       width: 100%;
       z-index: 1000;
       background: rgba(11, 29, 58, 0.95);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(26, 188, 156, 0.15);
       padding: 0 2rem;
+      transition: box-shadow 0.3s;
+    }
+
+    nav.scrolled {
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
     }
 
     .nav-inner {
@@ -57,7 +136,7 @@
 
     .nav-logo {
       font-size: 1.15rem;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--white);
       letter-spacing: 0.5px;
     }
@@ -71,15 +150,85 @@
     }
 
     .nav-links a {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       color: var(--gray-text);
       transition: color 0.3s;
+      position: relative;
     }
 
-    .nav-links a:hover { color: var(--teal); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--teal);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--teal); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      width: 100%;
+      background: rgba(11, 29, 58, 0.98);
+      backdrop-filter: blur(12px);
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid rgba(26,188,156,0.15);
+      z-index: 999;
+    }
+
+    .mobile-menu.open { display: block; }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.8rem 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--body-text);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      transition: color 0.3s;
+    }
+
+    .mobile-menu a:hover { color: var(--teal); }
 
     /* ========== HERO ========== */
     .hero {
@@ -116,37 +265,62 @@
       border-radius: 50%;
     }
 
-    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+    }
 
     .hero-badge {
       display: inline-block;
-      padding: 0.4rem 1.2rem;
+      padding: 0.4rem 1.4rem;
       border: 1px solid var(--teal);
       border-radius: 50px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       color: var(--teal);
       margin-bottom: 2rem;
+      animation: fadeInDown 0.8s ease 0.3s both;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .hero h1 {
-      font-size: clamp(2.8rem, 7vw, 5rem);
-      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 900;
       color: var(--white);
-      line-height: 1.1;
-      margin-bottom: 0.5rem;
+      line-height: 1.05;
+      margin-bottom: 0.6rem;
+      animation: fadeInUp 0.8s ease 0.5s both;
     }
 
     .hero h1 .accent { color: var(--teal); }
 
     .hero-subtitle {
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.5rem);
       color: var(--gold);
-      font-weight: 600;
+      font-weight: 700;
+      font-style: italic;
       margin-bottom: 1.5rem;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
+      animation: fadeInUp 0.8s ease 0.7s both;
     }
 
     .hero-desc {
@@ -154,6 +328,7 @@
       color: var(--body-text);
       max-width: 600px;
       margin: 0 auto 2.5rem;
+      animation: fadeInUp 0.8s ease 0.9s both;
     }
 
     .hero-cta {
@@ -164,19 +339,109 @@
       background: var(--teal);
       color: var(--navy);
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       border-radius: 50px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background 0.3s, transform 0.3s;
+      letter-spacing: 1.5px;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      animation: fadeInUp 0.8s ease 1.1s both;
+      box-shadow: 0 4px 15px rgba(26,188,156,0.3);
     }
 
     .hero-cta:hover {
       background: var(--teal-dark);
       transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(26,188,156,0.4);
     }
 
-    .hero-cta .arrow { font-size: 1.2rem; }
+    .hero-cta .arrow {
+      font-size: 1.2rem;
+      animation: bounce 2s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(4px); }
+      60% { transform: translateY(2px); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      animation: fadeIn 1s ease 1.5s both;
+    }
+
+    .scroll-hint span {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--gray-text);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--teal), transparent);
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    @keyframes scrollPulse {
+      0% { opacity: 1; height: 40px; }
+      50% { opacity: 0.3; height: 20px; }
+      100% { opacity: 1; height: 40px; }
+    }
+
+    /* ========== MISSION STATEMENT ========== */
+    .mission {
+      background: linear-gradient(180deg, #0e2444 0%, var(--navy) 100%);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .mission-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .mission-divider {
+      width: 60px;
+      height: 3px;
+      background: var(--teal);
+      margin: 0 auto 2rem;
+      border-radius: 3px;
+    }
+
+    .mission-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--teal);
+      margin-bottom: 1.5rem;
+    }
+
+    .mission-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+      color: var(--white);
+      line-height: 1.8;
+      font-style: italic;
+    }
+
+    .mission-text strong {
+      color: var(--teal);
+      font-style: normal;
+    }
+
+    .mission-text em {
+      color: var(--gold);
+    }
 
     /* ========== SECTION SHARED ========== */
     section { padding: 6rem 2rem; }
@@ -210,6 +475,14 @@
       margin-bottom: 3rem;
     }
 
+    .section-divider {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(26,188,156,0.2), transparent);
+    }
+
     /* ========== THE PROBLEM ========== */
     .problem { background: var(--navy); }
 
@@ -225,24 +498,25 @@
       border-radius: 16px;
       padding: 2rem;
       text-align: center;
-      transition: transform 0.3s, border-color 0.3s;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
 
     .stat-card:hover {
       transform: translateY(-4px);
       border-color: rgba(26,188,156,0.3);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
     }
 
     .stat-number {
-      font-size: 3rem;
-      font-weight: 800;
+      font-size: 3.2rem;
+      font-weight: 900;
       color: var(--teal);
       line-height: 1;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
     }
 
     .stat-label {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       color: var(--body-text);
       line-height: 1.5;
     }
@@ -267,11 +541,17 @@
 
     .myth-card {
       background: rgba(11, 29, 58, 0.6);
-      border: 1px solid rgba(243,156,18,0.15);
+      border: 1px solid rgba(243,156,18,0.1);
       border-radius: 16px;
       padding: 2rem;
       position: relative;
       overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .myth-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
     }
 
     .myth-card::before {
@@ -283,7 +563,7 @@
       height: 100%;
     }
 
-    .myth-card.myth::before { background: #e74c3c; }
+    .myth-card.myth::before { background: var(--red); }
     .myth-card.truth::before { background: var(--teal); }
 
     .myth-tag {
@@ -299,7 +579,7 @@
 
     .myth .myth-tag {
       background: rgba(231,76,60,0.15);
-      color: #e74c3c;
+      color: var(--red);
     }
 
     .truth .myth-tag {
@@ -319,7 +599,7 @@
       line-height: 1.7;
     }
 
-    /* ========== REAL TALK (Scenarios) ========== */
+    /* ========== REAL TALK ========== */
     .real-talk { background: var(--navy); }
 
     .scenario-list {
@@ -337,6 +617,12 @@
       border-radius: 16px;
       padding: 2rem;
       border: 1px solid rgba(26,188,156,0.08);
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .scenario:hover {
+      border-color: rgba(26,188,156,0.2);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
 
     .scenario-icon {
@@ -354,19 +640,27 @@
     .scenario-text h3 {
       font-size: 1.1rem;
       color: var(--white);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
       font-weight: 700;
     }
 
     .scenario-text .old {
-      color: #e74c3c;
+      color: var(--red);
       font-size: 0.9rem;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.4rem;
+      padding: 0.4rem 0.6rem;
+      background: rgba(231,76,60,0.06);
+      border-radius: 6px;
+      display: inline-block;
     }
 
     .scenario-text .new {
       color: var(--teal);
       font-size: 0.9rem;
+      padding: 0.4rem 0.6rem;
+      background: rgba(26,188,156,0.06);
+      border-radius: 6px;
+      display: inline-block;
     }
 
     .scenario-text .old::before { content: '\2717  Old thinking: '; font-weight: 700; }
@@ -389,10 +683,14 @@
       border-radius: 16px;
       padding: 2rem;
       text-align: center;
-      transition: transform 0.3s;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
     }
 
-    .action-card:hover { transform: translateY(-3px); }
+    .action-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(26,188,156,0.25);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    }
 
     .action-num {
       width: 44px;
@@ -436,24 +734,29 @@
       padding: 2rem;
       border-left: 4px solid var(--gold);
       position: relative;
+      transition: transform 0.3s;
     }
 
+    .quote-card:hover { transform: translateY(-3px); }
+
     .quote-card .quote-mark {
-      font-size: 3rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
       color: var(--gold);
-      opacity: 0.3;
+      opacity: 0.2;
       line-height: 1;
       position: absolute;
-      top: 1rem;
+      top: 0.8rem;
       right: 1.5rem;
     }
 
     .quote-card blockquote {
-      font-size: 1rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.02rem;
       font-style: italic;
       color: var(--white);
       margin-bottom: 1rem;
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
     .quote-card .attribution {
@@ -481,10 +784,13 @@
       display: flex;
       align-items: start;
       gap: 1rem;
-      transition: border-color 0.3s;
+      transition: border-color 0.3s, transform 0.3s;
     }
 
-    .resource-card:hover { border-color: rgba(26,188,156,0.35); }
+    .resource-card:hover {
+      border-color: rgba(26,188,156,0.35);
+      transform: translateY(-2px);
+    }
 
     .resource-icon {
       width: 48px;
@@ -521,11 +827,63 @@
       letter-spacing: 1px;
     }
 
+    /* ========== ABOUT THIS CAMPAIGN ========== */
+    .about-campaign {
+      background: var(--navy);
+      padding: 5rem 2rem;
+    }
+
+    .about-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .about-item {
+      background: var(--deep-blue);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid rgba(26,188,156,0.08);
+    }
+
+    .about-item h4 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--teal);
+      margin-bottom: 0.6rem;
+    }
+
+    .about-item p {
+      font-size: 0.88rem;
+      color: var(--body-text);
+      line-height: 1.6;
+    }
+
     /* ========== CTA BANNER ========== */
     .cta-banner {
       background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 50%, #1dd1a1 100%);
       text-align: center;
       padding: 5rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 50%);
     }
 
     .cta-banner h2 {
@@ -533,6 +891,7 @@
       color: var(--navy);
       font-weight: 800;
       margin-bottom: 1rem;
+      position: relative;
     }
 
     .cta-banner p {
@@ -541,6 +900,7 @@
       max-width: 550px;
       margin: 0 auto 2rem;
       font-weight: 500;
+      position: relative;
     }
 
     .cta-btn {
@@ -554,13 +914,16 @@
       font-size: 0.9rem;
       border-radius: 50px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: background 0.3s, transform 0.3s;
+      letter-spacing: 1.5px;
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     .cta-btn:hover {
       background: var(--deep-blue);
       transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.3);
     }
 
     /* ========== FOOTER ========== */
@@ -592,10 +955,11 @@
       gap: 2rem;
       list-style: none;
       margin-bottom: 1.5rem;
+      flex-wrap: wrap;
     }
 
     .footer-links a {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--gray-text);
       font-weight: 600;
       text-transform: uppercase;
@@ -616,7 +980,7 @@
 
     .footer-crisis p {
       font-size: 0.85rem;
-      color: #e74c3c;
+      color: var(--red);
       font-weight: 600;
     }
 
@@ -633,31 +997,91 @@
 
     .footer-copy span { color: var(--teal); }
 
+    /* ========== BACK TO TOP ========== */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 44px;
+      height: 44px;
+      background: var(--teal);
+      color: var(--navy);
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+      z-index: 500;
+      box-shadow: 0 4px 15px rgba(26,188,156,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(26,188,156,0.4);
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (max-width: 768px) {
       .nav-links { display: none; }
+      .hamburger { display: flex; }
       section { padding: 4rem 1.5rem; }
       .scenario { grid-template-columns: 1fr; }
       .scenario-icon { display: none; }
       .hero { padding: 5rem 1.5rem 3rem; }
+      .scroll-hint { display: none; }
+      .footer-links { gap: 1rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .mission { padding: 3.5rem 1.5rem; }
     }
   </style>
 </head>
 <body>
 
+  <!-- PAGE LOADER -->
+  <div class="page-loader" id="loader">
+    <div style="text-align: center;">
+      <div class="loader-text">WHY NOT <span>US?</span></div>
+      <div class="loader-bar"></div>
+    </div>
+  </div>
+
   <!-- NAVIGATION -->
-  <nav>
+  <nav id="navbar">
     <div class="nav-inner">
       <div class="nav-logo">WHY NOT <span>US?</span></div>
       <ul class="nav-links">
+        <li><a href="#mission">Mission</a></li>
         <li><a href="#problem">The Problem</a></li>
         <li><a href="#rethink">Rethink</a></li>
         <li><a href="#real-talk">Real Talk</a></li>
         <li><a href="#action">Take Action</a></li>
         <li><a href="#resources">Resources</a></li>
       </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#mission">Mission</a>
+    <a href="#problem">The Problem</a>
+    <a href="#rethink">Rethink</a>
+    <a href="#real-talk">Real Talk</a>
+    <a href="#action">Take Action</a>
+    <a href="#resources">Resources</a>
+  </div>
 
   <!-- HERO -->
   <section class="hero" id="home">
@@ -668,78 +1092,103 @@
       <p class="hero-desc">
         A campaign for teenage boys challenging the myth that seeking help means weakness. Therapy isn't defeat &mdash; it's building the tools to win.
       </p>
-      <a href="#problem" class="hero-cta">Learn More <span class="arrow">&darr;</span></a>
+      <a href="#mission" class="hero-cta">Learn More <span class="arrow">&darr;</span></a>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
     </div>
   </section>
+
+  <!-- MISSION STATEMENT -->
+  <section class="mission" id="mission">
+    <div class="mission-inner">
+      <div class="reveal">
+        <div class="mission-divider"></div>
+        <p class="mission-label">Our Mission</p>
+        <p class="mission-text">
+          I aim to <strong>educate teenage boys</strong> by reframing therapy as a tool for building strength and coping skills, to help them <em>rethink the belief that men must hide their feelings</em>, because early support can prevent serious mental health problems and <strong>save and change lives</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
 
   <!-- THE PROBLEM -->
   <section class="problem" id="problem">
     <div class="section-inner">
-      <span class="section-label">The Problem</span>
-      <h2 class="section-title">The numbers tell a story we can't ignore.</h2>
-      <p class="section-desc">
-        Society tells boys to be tough, stay quiet, and handle it alone. The cost of that silence is measured in lives.
-      </p>
+      <div class="reveal">
+        <span class="section-label">The Problem</span>
+        <h2 class="section-title">The numbers tell a story we can't ignore.</h2>
+        <p class="section-desc">
+          Society tells boys to be tough, stay quiet, and handle it alone. The cost of that silence is measured in lives.
+        </p>
+      </div>
       <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-number">50%+</div>
+        <div class="stat-card reveal reveal-delay-1">
+          <div class="stat-number" data-target="50" data-suffix="%+">0</div>
           <p class="stat-label">of people with mental illness don't receive help for their disorders</p>
-          <p class="stat-source">NAMI</p>
+          <p class="stat-source">NAMI, 2025</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">4x</div>
+        <div class="stat-card reveal reveal-delay-2">
+          <div class="stat-number" data-target="4" data-suffix="x">0</div>
           <p class="stat-label">Men die by suicide at nearly four times the rate of women in the U.S.</p>
-          <p class="stat-source">CDC</p>
+          <p class="stat-source">CDC, 2025</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">&#8595;</div>
+        <div class="stat-card reveal reveal-delay-3">
+          <div class="stat-number arrow-stat">&#8595;</div>
           <p class="stat-label">Men seek fewer mental health services than women across all age groups</p>
-          <p class="stat-source">NIMH</p>
+          <p class="stat-source">NIMH, 2023</p>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">&#8593;</div>
+        <div class="stat-card reveal reveal-delay-4">
+          <div class="stat-number arrow-stat">&#8593;</div>
           <p class="stat-label">Suicide rates among males continue to rise, especially among teens</p>
-          <p class="stat-source">CDC</p>
+          <p class="stat-source">CDC, 2025</p>
         </div>
       </div>
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- RETHINK: MYTHS VS TRUTHS -->
   <section class="rethink" id="rethink">
     <div class="section-inner">
-      <span class="section-label">Rethink</span>
-      <h2 class="section-title">What we've been told vs. what's actually true.</h2>
-      <p class="section-desc">
-        The beliefs holding us back aren't facts &mdash; they're outdated scripts. Here's what the research actually says.
-      </p>
+      <div class="reveal">
+        <span class="section-label">Rethink</span>
+        <h2 class="section-title">What we've been told vs. what's actually true.</h2>
+        <p class="section-desc">
+          The beliefs holding us back aren't facts &mdash; they're outdated scripts. Here's what the research actually says.
+        </p>
+      </div>
       <div class="myth-grid">
-        <div class="myth-card myth">
+        <div class="myth-card myth reveal reveal-delay-1">
           <span class="myth-tag">Myth</span>
           <h3>"Real men don't need therapy."</h3>
           <p>Boys are taught from a young age to hide their feelings and deal with problems alone. This creates an internal belief that asking for help is a sign of weakness or failure.</p>
         </div>
-        <div class="myth-card truth">
+        <div class="myth-card truth reveal reveal-delay-2">
           <span class="myth-tag">Truth</span>
           <h3>Therapy builds strength, not weakness.</h3>
           <p>Research shows men respond positively to therapy when it's framed as building coping skills and emotional resilience &mdash; the same way athletes train their bodies (APA).</p>
         </div>
-        <div class="myth-card myth">
+        <div class="myth-card myth reveal reveal-delay-1">
           <span class="myth-tag">Myth</span>
           <h3>"If I go to therapy, people will think something's wrong with me."</h3>
           <p>Teens worry about peer judgment more than almost anything. The fear of being labeled or treated differently keeps many from ever reaching out.</p>
         </div>
-        <div class="myth-card truth">
+        <div class="myth-card truth reveal reveal-delay-2">
           <span class="myth-tag">Truth</span>
           <h3>Talking about it is the bravest thing you can do.</h3>
           <p>Public figures and athletes who speak openly about therapy are helping normalize it. Visibility breaks stigma. The more we see it, the more normal it becomes.</p>
         </div>
-        <div class="myth-card myth">
+        <div class="myth-card myth reveal reveal-delay-1">
           <span class="myth-tag">Myth</span>
           <h3>"I should be able to handle this on my own."</h3>
           <p>Media often portrays strong male characters as emotionless, independent, and never asking for help. These portrayals set unrealistic expectations for real life.</p>
         </div>
-        <div class="myth-card truth">
+        <div class="myth-card truth reveal reveal-delay-2">
           <span class="myth-tag">Truth</span>
           <h3>Even the strongest people have a team behind them.</h3>
           <p>No one succeeds alone. Therapy is a tool &mdash; like a coach, a mentor, or a training plan. It helps you perform better in every part of life.</p>
@@ -748,16 +1197,20 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- REAL TALK -->
   <section class="real-talk" id="real-talk">
     <div class="section-inner">
-      <span class="section-label">Real Talk</span>
-      <h2 class="section-title">Sound familiar? Let's rethink it.</h2>
-      <p class="section-desc">
-        These are real situations where outdated thinking holds us back. There's a better way.
-      </p>
+      <div class="reveal">
+        <span class="section-label">Real Talk</span>
+        <h2 class="section-title">Sound familiar? Let's rethink it.</h2>
+        <p class="section-desc">
+          These are real situations where outdated thinking holds us back. There's a better way.
+        </p>
+      </div>
       <div class="scenario-list">
-        <div class="scenario">
+        <div class="scenario reveal">
           <div class="scenario-icon">&#128172;</div>
           <div class="scenario-text">
             <h3>Your friend hasn't been himself lately.</h3>
@@ -765,7 +1218,7 @@
             <p class="new">"Hey, I've noticed you seem off. I'm here if you want to talk. No judgment."</p>
           </div>
         </div>
-        <div class="scenario">
+        <div class="scenario reveal">
           <div class="scenario-icon">&#128170;</div>
           <div class="scenario-text">
             <h3>Someone mentions they're in therapy.</h3>
@@ -773,7 +1226,7 @@
             <p class="new">"Respect. Taking care of your mind takes guts."</p>
           </div>
         </div>
-        <div class="scenario">
+        <div class="scenario reveal">
           <div class="scenario-icon">&#129504;</div>
           <div class="scenario-text">
             <h3>You've been feeling stressed and overwhelmed.</h3>
@@ -781,7 +1234,7 @@
             <p class="new">"Maybe I should talk to someone who can help me build better strategies."</p>
           </div>
         </div>
-        <div class="scenario">
+        <div class="scenario reveal">
           <div class="scenario-icon">&#127942;</div>
           <div class="scenario-text">
             <h3>A pro athlete talks about mental health publicly.</h3>
@@ -793,41 +1246,45 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- WHAT YOU CAN DO -->
   <section class="action" id="action">
     <div class="section-inner">
-      <span class="section-label">Take Action</span>
-      <h2 class="section-title">What you can do right now.</h2>
-      <p class="section-desc">
-        You don't need a degree or a platform. Change starts in your conversations, your group chats, and your locker rooms.
-      </p>
+      <div class="reveal">
+        <span class="section-label">Take Action</span>
+        <h2 class="section-title">What you can do right now.</h2>
+        <p class="section-desc">
+          You don't need a degree or a platform. Change starts in your conversations, your group chats, and your locker rooms.
+        </p>
+      </div>
       <div class="action-grid">
-        <div class="action-card">
+        <div class="action-card reveal reveal-delay-1">
           <div class="action-num">1</div>
           <h3>Check In</h3>
           <p>Ask your friends how they're really doing. A simple "you good?" can open a door someone's been afraid to walk through.</p>
         </div>
-        <div class="action-card">
+        <div class="action-card reveal reveal-delay-2">
           <div class="action-num">2</div>
           <h3>Watch Your Words</h3>
           <p>Stop using mental health as a punchline. Phrases like "that's so OCD" or calling someone "psycho" reinforce harmful stigma.</p>
         </div>
-        <div class="action-card">
+        <div class="action-card reveal reveal-delay-3">
           <div class="action-num">3</div>
           <h3>Normalize It</h3>
           <p>Talk about therapy the same way you'd talk about going to the gym. The more casual we make it, the less scary it becomes.</p>
         </div>
-        <div class="action-card">
+        <div class="action-card reveal reveal-delay-4">
           <div class="action-num">4</div>
           <h3>Lead by Example</h3>
           <p>If you've talked to someone or gotten help, share that. Your honesty gives others permission to do the same.</p>
         </div>
-        <div class="action-card">
+        <div class="action-card reveal reveal-delay-5">
           <div class="action-num">5</div>
           <h3>Challenge Stereotypes</h3>
           <p>When someone says "man up" or "boys don't cry," push back. Strength isn't silence &mdash; it's knowing when to speak up.</p>
         </div>
-        <div class="action-card">
+        <div class="action-card reveal">
           <div class="action-num">6</div>
           <h3>Share This Campaign</h3>
           <p>Send this to a friend, post it, screenshot it. The more people who see this, the more the conversation grows.</p>
@@ -836,23 +1293,27 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- VOICES -->
   <section class="voices" id="voices">
     <div class="section-inner">
-      <span class="section-label">Reframing Strength</span>
-      <h2 class="section-title">Strength looks different than you think.</h2>
+      <div class="reveal">
+        <span class="section-label">Reframing Strength</span>
+        <h2 class="section-title">Strength looks different than you think.</h2>
+      </div>
       <div class="quote-grid">
-        <div class="quote-card">
+        <div class="quote-card reveal reveal-delay-1">
           <span class="quote-mark">&ldquo;</span>
           <blockquote>You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, frustrated, scared, or anxious. Having feelings doesn't make you a negative person. It makes you human.</blockquote>
           <p class="attribution">&mdash; Lori Deschene</p>
         </div>
-        <div class="quote-card">
+        <div class="quote-card reveal reveal-delay-2">
           <span class="quote-mark">&ldquo;</span>
           <blockquote>I fight stigma by choosing to live an empowered life. To me, that means owning my life and my story and refusing to allow others to dictate how I view myself or how I feel about myself.</blockquote>
           <p class="attribution">&mdash; Val Fletcher, NAMI</p>
         </div>
-        <div class="quote-card">
+        <div class="quote-card reveal reveal-delay-3">
           <span class="quote-mark">&ldquo;</span>
           <blockquote>The strongest people are not those who show strength in front of us but those who win battles we know nothing about.</blockquote>
           <p class="attribution">&mdash; Unknown</p>
@@ -861,24 +1322,28 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
   <!-- RESOURCES -->
   <section class="resources" id="resources">
     <div class="section-inner">
-      <span class="section-label">Resources</span>
-      <h2 class="section-title">You're not alone. Help is out there.</h2>
-      <p class="section-desc">
-        Whether it's for you or someone you know, these resources are free, confidential, and here for you.
-      </p>
+      <div class="reveal">
+        <span class="section-label">Resources</span>
+        <h2 class="section-title">You're not alone. Help is out there.</h2>
+        <p class="section-desc">
+          Whether it's for you or someone you know, these resources are free, confidential, and here for you.
+        </p>
+      </div>
       <div class="resource-grid">
-        <div class="resource-card">
+        <div class="resource-card reveal reveal-delay-1">
           <div class="resource-icon">&#128222;</div>
           <div>
-            <h3>988 Suicide & Crisis Lifeline</h3>
+            <h3>988 Suicide &amp; Crisis Lifeline</h3>
             <p>Call or text 988 for free, 24/7 support. Available to anyone in crisis or emotional distress.</p>
             <span class="resource-link">Call or Text 988</span>
           </div>
         </div>
-        <div class="resource-card">
+        <div class="resource-card reveal reveal-delay-2">
           <div class="resource-icon">&#128172;</div>
           <div>
             <h3>Crisis Text Line</h3>
@@ -886,7 +1351,7 @@
             <span class="resource-link">Text HOME to 741741</span>
           </div>
         </div>
-        <div class="resource-card">
+        <div class="resource-card reveal reveal-delay-3">
           <div class="resource-icon">&#127758;</div>
           <div>
             <h3>NAMI (National Alliance on Mental Illness)</h3>
@@ -894,7 +1359,7 @@
             <span class="resource-link">nami.org</span>
           </div>
         </div>
-        <div class="resource-card">
+        <div class="resource-card reveal reveal-delay-4">
           <div class="resource-icon">&#128218;</div>
           <div>
             <h3>MentalHealth.gov</h3>
@@ -906,13 +1371,56 @@
     </div>
   </section>
 
+  <div class="section-divider"></div>
+
+  <!-- ABOUT THIS CAMPAIGN -->
+  <section class="about-campaign" id="about">
+    <div class="about-inner">
+      <div class="reveal">
+        <span class="section-label">About This Campaign</span>
+        <h2 class="section-title">Why we designed it this way.</h2>
+        <p class="section-desc">
+          Every design choice on this site was made with intention &mdash; to reach teenage boys where they are, not where adults think they should be.
+        </p>
+      </div>
+      <div class="about-grid">
+        <div class="about-item reveal reveal-delay-1">
+          <h4>Audience</h4>
+          <p>Teenage boys (ages 13&ndash;18) who may be struggling silently or reinforcing stigma without realizing it.</p>
+        </div>
+        <div class="about-item reveal reveal-delay-2">
+          <h4>Tone</h4>
+          <p>Direct and conversational &mdash; not preachy or clinical. We speak to teens like peers, not patients.</p>
+        </div>
+        <div class="about-item reveal reveal-delay-3">
+          <h4>Language</h4>
+          <p>Therapy is framed as "building tools" and "training your mind" &mdash; language that resonates with how boys already think about growth.</p>
+        </div>
+        <div class="about-item reveal reveal-delay-4">
+          <h4>Visual Design</h4>
+          <p>Dark, modern aesthetic with teal and gold accents. Designed to feel strong and confident &mdash; not soft or clinical.</p>
+        </div>
+        <div class="about-item reveal reveal-delay-5">
+          <h4>Structure</h4>
+          <p>Moves from awareness (the problem) to understanding (myths vs. truths) to action (what you can do) &mdash; a deliberate persuasive arc.</p>
+        </div>
+        <div class="about-item reveal">
+          <h4>Ethics</h4>
+          <p>No graphic content or triggering imagery. Crisis resources are always visible. The campaign empowers without speaking for anyone's experience.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA BANNER -->
   <section class="cta-banner">
-    <h2>Strength isn't staying silent.<br>It's speaking up.</h2>
-    <p>
-      If we can train our bodies, study for exams, and practice for games &mdash; why not train our minds too?
-    </p>
-    <a href="#action" class="cta-btn">Join the Movement</a>
+    <div class="reveal">
+      <h2>Strength isn't staying silent.<br>It's speaking up.</h2>
+      <p>
+        If we can train our bodies, study for exams, and practice for games &mdash; why not train our minds too?
+      </p>
+      <a href="#action" class="cta-btn">Join the Movement</a>
+    </div>
   </section>
 
   <!-- FOOTER -->
@@ -924,6 +1432,7 @@
     <div class="footer-logo">WHY NOT <span>US?</span></div>
     <p class="footer-tagline">Rethink Stigma &bull; CAS 3 Mental Health Campaign</p>
     <ul class="footer-links">
+      <li><a href="#mission">Mission</a></li>
       <li><a href="#problem">The Problem</a></li>
       <li><a href="#rethink">Rethink</a></li>
       <li><a href="#real-talk">Real Talk</a></li>
@@ -934,6 +1443,105 @@
       &copy; 2025 <span>Why Not Us?</span> Campaign &mdash; Designed to challenge stigma and start conversations.
     </p>
   </footer>
+
+  <!-- BACK TO TOP -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&uarr;</button>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Page loader
+    window.addEventListener('load', () => {
+      setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600);
+    });
+
+    // Scroll reveal
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Animated stat counters
+    const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target);
+          const suffix = el.dataset.suffix || '';
+          let current = 0;
+          const duration = 1500;
+          const step = target / (duration / 16);
+
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+              current = target;
+              clearInterval(timer);
+            }
+            el.textContent = Math.round(current) + suffix;
+          }, 16);
+
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statNumbers.forEach(el => counterObserver.observe(el));
+
+    // Nav scroll effect + active section highlighting
+    const navbar = document.getElementById('navbar');
+    const backToTop = document.getElementById('backToTop');
+    const sections = document.querySelectorAll('section[id]');
+    const navLinksAll = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+
+      // Nav shadow
+      navbar.classList.toggle('scrolled', scrollY > 50);
+
+      // Back to top visibility
+      backToTop.classList.toggle('visible', scrollY > 600);
+
+      // Active nav link
+      let currentSection = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 100;
+        if (scrollY >= top) currentSection = section.getAttribute('id');
+      });
+
+      navLinksAll.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + currentSection);
+      });
+    });
+
+    // Back to top click
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+  </script>
 
 </body>
 </html>
