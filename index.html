@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why Not Us? | Rethink Stigma</title>
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy: #0b1d3a;
+      --deep-blue: #132d5e;
+      --teal: #1abc9c;
+      --teal-dark: #16a085;
+      --gold: #f39c12;
+      --light: #f0f4f8;
+      --white: #ffffff;
+      --gray-text: #8899aa;
+      --body-text: #c8d6e5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--navy);
+      color: var(--body-text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ========== NAVIGATION ========== */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(11, 29, 58, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(26, 188, 156, 0.15);
+      padding: 0 2rem;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.5px;
+    }
+
+    .nav-logo span { color: var(--teal); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--gray-text);
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      background: linear-gradient(170deg, var(--navy) 0%, var(--deep-blue) 50%, #0e2444 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(26,188,156,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(243,156,18,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border: 1px solid var(--teal);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--teal);
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero h1 .accent { color: var(--teal); }
+
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--body-text);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2.5rem;
+      background: var(--teal);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .hero-cta:hover {
+      background: var(--teal-dark);
+      transform: translateY(-2px);
+    }
+
+    .hero-cta .arrow { font-size: 1.2rem; }
+
+    /* ========== SECTION SHARED ========== */
+    section { padding: 6rem 2rem; }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--teal);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      max-width: 650px;
+      margin-bottom: 3rem;
+    }
+
+    /* ========== THE PROBLEM ========== */
+    .problem { background: var(--navy); }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--deep-blue);
+      border: 1px solid rgba(26,188,156,0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(26,188,156,0.3);
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--teal);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--body-text);
+      line-height: 1.5;
+    }
+
+    .stat-source {
+      font-size: 0.7rem;
+      color: var(--gray-text);
+      margin-top: 0.8rem;
+      font-style: italic;
+    }
+
+    /* ========== THE MYTH / RETHINK ========== */
+    .rethink {
+      background: linear-gradient(180deg, var(--deep-blue) 0%, var(--navy) 100%);
+    }
+
+    .myth-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .myth-card {
+      background: rgba(11, 29, 58, 0.6);
+      border: 1px solid rgba(243,156,18,0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .myth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .myth-card.myth::before { background: #e74c3c; }
+    .myth-card.truth::before { background: var(--teal); }
+
+    .myth-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 0.25rem 0.8rem;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+    }
+
+    .myth .myth-tag {
+      background: rgba(231,76,60,0.15);
+      color: #e74c3c;
+    }
+
+    .truth .myth-tag {
+      background: rgba(26,188,156,0.15);
+      color: var(--teal);
+    }
+
+    .myth-card h3 {
+      font-size: 1.2rem;
+      color: var(--white);
+      margin-bottom: 0.8rem;
+      font-weight: 700;
+    }
+
+    .myth-card p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* ========== REAL TALK (Scenarios) ========== */
+    .real-talk { background: var(--navy); }
+
+    .scenario-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .scenario {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+      background: var(--deep-blue);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(26,188,156,0.08);
+    }
+
+    .scenario-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(26,188,156,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .scenario-text h3 {
+      font-size: 1.1rem;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .scenario-text .old {
+      color: #e74c3c;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .scenario-text .new {
+      color: var(--teal);
+      font-size: 0.9rem;
+    }
+
+    .scenario-text .old::before { content: '\2717  Old thinking: '; font-weight: 700; }
+    .scenario-text .new::before { content: '\2713  Rethink: '; font-weight: 700; }
+
+    /* ========== WHAT YOU CAN DO ========== */
+    .action {
+      background: linear-gradient(180deg, var(--navy) 0%, var(--deep-blue) 100%);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .action-card {
+      background: rgba(11, 29, 58, 0.8);
+      border: 1px solid rgba(26,188,156,0.12);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .action-card:hover { transform: translateY(-3px); }
+
+    .action-num {
+      width: 44px;
+      height: 44px;
+      background: var(--teal);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .action-card h3 {
+      color: var(--white);
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .action-card p {
+      font-size: 0.88rem;
+      color: var(--gray-text);
+      line-height: 1.6;
+    }
+
+    /* ========== VOICES ========== */
+    .voices { background: var(--navy); }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .quote-card {
+      background: var(--deep-blue);
+      border-radius: 16px;
+      padding: 2rem;
+      border-left: 4px solid var(--gold);
+      position: relative;
+    }
+
+    .quote-card .quote-mark {
+      font-size: 3rem;
+      color: var(--gold);
+      opacity: 0.3;
+      line-height: 1;
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+    }
+
+    .quote-card blockquote {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--white);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    .quote-card .attribution {
+      font-size: 0.8rem;
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    /* ========== RESOURCES ========== */
+    .resources {
+      background: linear-gradient(180deg, var(--deep-blue) 0%, var(--navy) 100%);
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .resource-card {
+      background: rgba(11, 29, 58, 0.8);
+      border: 1px solid rgba(26,188,156,0.12);
+      border-radius: 16px;
+      padding: 1.8rem;
+      display: flex;
+      align-items: start;
+      gap: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .resource-card:hover { border-color: rgba(26,188,156,0.35); }
+
+    .resource-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(26,188,156,0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .resource-card h3 {
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .resource-card p {
+      font-size: 0.85rem;
+      color: var(--gray-text);
+      line-height: 1.5;
+    }
+
+    .resource-card .resource-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ========== CTA BANNER ========== */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 50%, #1dd1a1 100%);
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+
+    .cta-banner h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--navy);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .cta-banner p {
+      font-size: 1.1rem;
+      color: var(--deep-blue);
+      max-width: 550px;
+      margin: 0 auto 2rem;
+      font-weight: 500;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--navy);
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .cta-btn:hover {
+      background: var(--deep-blue);
+      transform: translateY(-2px);
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid rgba(26,188,156,0.1);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-logo span { color: var(--teal); }
+
+    .footer-tagline {
+      font-size: 0.85rem;
+      color: var(--gray-text);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.8rem;
+      color: var(--gray-text);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: var(--teal); }
+
+    .footer-crisis {
+      background: rgba(231,76,60,0.1);
+      border: 1px solid rgba(231,76,60,0.25);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-crisis p {
+      font-size: 0.85rem;
+      color: #e74c3c;
+      font-weight: 600;
+    }
+
+    .footer-crisis .crisis-number {
+      font-size: 1.2rem;
+      color: var(--white);
+      font-weight: 800;
+    }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--gray-text);
+    }
+
+    .footer-copy span { color: var(--teal); }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      section { padding: 4rem 1.5rem; }
+      .scenario { grid-template-columns: 1fr; }
+      .scenario-icon { display: none; }
+      .hero { padding: 5rem 1.5rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">WHY NOT <span>US?</span></div>
+      <ul class="nav-links">
+        <li><a href="#problem">The Problem</a></li>
+        <li><a href="#rethink">Rethink</a></li>
+        <li><a href="#real-talk">Real Talk</a></li>
+        <li><a href="#action">Take Action</a></li>
+        <li><a href="#resources">Resources</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge">CAS 3 Mental Health Campaign</div>
+      <h1>WHY NOT <span class="accent">US?</span></h1>
+      <p class="hero-subtitle">Rethink Stigma. Redefine Strength.</p>
+      <p class="hero-desc">
+        A campaign for teenage boys challenging the myth that seeking help means weakness. Therapy isn't defeat &mdash; it's building the tools to win.
+      </p>
+      <a href="#problem" class="hero-cta">Learn More <span class="arrow">&darr;</span></a>
+    </div>
+  </section>
+
+  <!-- THE PROBLEM -->
+  <section class="problem" id="problem">
+    <div class="section-inner">
+      <span class="section-label">The Problem</span>
+      <h2 class="section-title">The numbers tell a story we can't ignore.</h2>
+      <p class="section-desc">
+        Society tells boys to be tough, stay quiet, and handle it alone. The cost of that silence is measured in lives.
+      </p>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number">50%+</div>
+          <p class="stat-label">of people with mental illness don't receive help for their disorders</p>
+          <p class="stat-source">NAMI</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4x</div>
+          <p class="stat-label">Men die by suicide at nearly four times the rate of women in the U.S.</p>
+          <p class="stat-source">CDC</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">&#8595;</div>
+          <p class="stat-label">Men seek fewer mental health services than women across all age groups</p>
+          <p class="stat-source">NIMH</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">&#8593;</div>
+          <p class="stat-label">Suicide rates among males continue to rise, especially among teens</p>
+          <p class="stat-source">CDC</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RETHINK: MYTHS VS TRUTHS -->
+  <section class="rethink" id="rethink">
+    <div class="section-inner">
+      <span class="section-label">Rethink</span>
+      <h2 class="section-title">What we've been told vs. what's actually true.</h2>
+      <p class="section-desc">
+        The beliefs holding us back aren't facts &mdash; they're outdated scripts. Here's what the research actually says.
+      </p>
+      <div class="myth-grid">
+        <div class="myth-card myth">
+          <span class="myth-tag">Myth</span>
+          <h3>"Real men don't need therapy."</h3>
+          <p>Boys are taught from a young age to hide their feelings and deal with problems alone. This creates an internal belief that asking for help is a sign of weakness or failure.</p>
+        </div>
+        <div class="myth-card truth">
+          <span class="myth-tag">Truth</span>
+          <h3>Therapy builds strength, not weakness.</h3>
+          <p>Research shows men respond positively to therapy when it's framed as building coping skills and emotional resilience &mdash; the same way athletes train their bodies (APA).</p>
+        </div>
+        <div class="myth-card myth">
+          <span class="myth-tag">Myth</span>
+          <h3>"If I go to therapy, people will think something's wrong with me."</h3>
+          <p>Teens worry about peer judgment more than almost anything. The fear of being labeled or treated differently keeps many from ever reaching out.</p>
+        </div>
+        <div class="myth-card truth">
+          <span class="myth-tag">Truth</span>
+          <h3>Talking about it is the bravest thing you can do.</h3>
+          <p>Public figures and athletes who speak openly about therapy are helping normalize it. Visibility breaks stigma. The more we see it, the more normal it becomes.</p>
+        </div>
+        <div class="myth-card myth">
+          <span class="myth-tag">Myth</span>
+          <h3>"I should be able to handle this on my own."</h3>
+          <p>Media often portrays strong male characters as emotionless, independent, and never asking for help. These portrayals set unrealistic expectations for real life.</p>
+        </div>
+        <div class="myth-card truth">
+          <span class="myth-tag">Truth</span>
+          <h3>Even the strongest people have a team behind them.</h3>
+          <p>No one succeeds alone. Therapy is a tool &mdash; like a coach, a mentor, or a training plan. It helps you perform better in every part of life.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REAL TALK -->
+  <section class="real-talk" id="real-talk">
+    <div class="section-inner">
+      <span class="section-label">Real Talk</span>
+      <h2 class="section-title">Sound familiar? Let's rethink it.</h2>
+      <p class="section-desc">
+        These are real situations where outdated thinking holds us back. There's a better way.
+      </p>
+      <div class="scenario-list">
+        <div class="scenario">
+          <div class="scenario-icon">&#128172;</div>
+          <div class="scenario-text">
+            <h3>Your friend hasn't been himself lately.</h3>
+            <p class="old">"He'll figure it out. I don't want to make it weird."</p>
+            <p class="new">"Hey, I've noticed you seem off. I'm here if you want to talk. No judgment."</p>
+          </div>
+        </div>
+        <div class="scenario">
+          <div class="scenario-icon">&#128170;</div>
+          <div class="scenario-text">
+            <h3>Someone mentions they're in therapy.</h3>
+            <p class="old">"That's kinda weird. He must really be going through it."</p>
+            <p class="new">"Respect. Taking care of your mind takes guts."</p>
+          </div>
+        </div>
+        <div class="scenario">
+          <div class="scenario-icon">&#129504;</div>
+          <div class="scenario-text">
+            <h3>You've been feeling stressed and overwhelmed.</h3>
+            <p class="old">"I just need to push through it. Talking about it won't help."</p>
+            <p class="new">"Maybe I should talk to someone who can help me build better strategies."</p>
+          </div>
+        </div>
+        <div class="scenario">
+          <div class="scenario-icon">&#127942;</div>
+          <div class="scenario-text">
+            <h3>A pro athlete talks about mental health publicly.</h3>
+            <p class="old">"He's soft. Athletes shouldn't be talking about that stuff."</p>
+            <p class="new">"If someone at the top of their game uses therapy, maybe it actually works."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU CAN DO -->
+  <section class="action" id="action">
+    <div class="section-inner">
+      <span class="section-label">Take Action</span>
+      <h2 class="section-title">What you can do right now.</h2>
+      <p class="section-desc">
+        You don't need a degree or a platform. Change starts in your conversations, your group chats, and your locker rooms.
+      </p>
+      <div class="action-grid">
+        <div class="action-card">
+          <div class="action-num">1</div>
+          <h3>Check In</h3>
+          <p>Ask your friends how they're really doing. A simple "you good?" can open a door someone's been afraid to walk through.</p>
+        </div>
+        <div class="action-card">
+          <div class="action-num">2</div>
+          <h3>Watch Your Words</h3>
+          <p>Stop using mental health as a punchline. Phrases like "that's so OCD" or calling someone "psycho" reinforce harmful stigma.</p>
+        </div>
+        <div class="action-card">
+          <div class="action-num">3</div>
+          <h3>Normalize It</h3>
+          <p>Talk about therapy the same way you'd talk about going to the gym. The more casual we make it, the less scary it becomes.</p>
+        </div>
+        <div class="action-card">
+          <div class="action-num">4</div>
+          <h3>Lead by Example</h3>
+          <p>If you've talked to someone or gotten help, share that. Your honesty gives others permission to do the same.</p>
+        </div>
+        <div class="action-card">
+          <div class="action-num">5</div>
+          <h3>Challenge Stereotypes</h3>
+          <p>When someone says "man up" or "boys don't cry," push back. Strength isn't silence &mdash; it's knowing when to speak up.</p>
+        </div>
+        <div class="action-card">
+          <div class="action-num">6</div>
+          <h3>Share This Campaign</h3>
+          <p>Send this to a friend, post it, screenshot it. The more people who see this, the more the conversation grows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOICES -->
+  <section class="voices" id="voices">
+    <div class="section-inner">
+      <span class="section-label">Reframing Strength</span>
+      <h2 class="section-title">Strength looks different than you think.</h2>
+      <div class="quote-grid">
+        <div class="quote-card">
+          <span class="quote-mark">&ldquo;</span>
+          <blockquote>You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, frustrated, scared, or anxious. Having feelings doesn't make you a negative person. It makes you human.</blockquote>
+          <p class="attribution">&mdash; Lori Deschene</p>
+        </div>
+        <div class="quote-card">
+          <span class="quote-mark">&ldquo;</span>
+          <blockquote>I fight stigma by choosing to live an empowered life. To me, that means owning my life and my story and refusing to allow others to dictate how I view myself or how I feel about myself.</blockquote>
+          <p class="attribution">&mdash; Val Fletcher, NAMI</p>
+        </div>
+        <div class="quote-card">
+          <span class="quote-mark">&ldquo;</span>
+          <blockquote>The strongest people are not those who show strength in front of us but those who win battles we know nothing about.</blockquote>
+          <p class="attribution">&mdash; Unknown</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES -->
+  <section class="resources" id="resources">
+    <div class="section-inner">
+      <span class="section-label">Resources</span>
+      <h2 class="section-title">You're not alone. Help is out there.</h2>
+      <p class="section-desc">
+        Whether it's for you or someone you know, these resources are free, confidential, and here for you.
+      </p>
+      <div class="resource-grid">
+        <div class="resource-card">
+          <div class="resource-icon">&#128222;</div>
+          <div>
+            <h3>988 Suicide & Crisis Lifeline</h3>
+            <p>Call or text 988 for free, 24/7 support. Available to anyone in crisis or emotional distress.</p>
+            <span class="resource-link">Call or Text 988</span>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">&#128172;</div>
+          <div>
+            <h3>Crisis Text Line</h3>
+            <p>Text HOME to 741741 to connect with a trained crisis counselor anytime.</p>
+            <span class="resource-link">Text HOME to 741741</span>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">&#127758;</div>
+          <div>
+            <h3>NAMI (National Alliance on Mental Illness)</h3>
+            <p>Education, support groups, and resources for anyone affected by mental health conditions.</p>
+            <span class="resource-link">nami.org</span>
+          </div>
+        </div>
+        <div class="resource-card">
+          <div class="resource-icon">&#128218;</div>
+          <div>
+            <h3>MentalHealth.gov</h3>
+            <p>U.S. government resource with information on mental health conditions and how to get help.</p>
+            <span class="resource-link">mentalhealth.gov</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <h2>Strength isn't staying silent.<br>It's speaking up.</h2>
+    <p>
+      If we can train our bodies, study for exams, and practice for games &mdash; why not train our minds too?
+    </p>
+    <a href="#action" class="cta-btn">Join the Movement</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-crisis">
+      <p>If you or someone you know is in crisis:</p>
+      <p class="crisis-number">Call or Text 988</p>
+    </div>
+    <div class="footer-logo">WHY NOT <span>US?</span></div>
+    <p class="footer-tagline">Rethink Stigma &bull; CAS 3 Mental Health Campaign</p>
+    <ul class="footer-links">
+      <li><a href="#problem">The Problem</a></li>
+      <li><a href="#rethink">Rethink</a></li>
+      <li><a href="#real-talk">Real Talk</a></li>
+      <li><a href="#action">Take Action</a></li>
+      <li><a href="#resources">Resources</a></li>
+    </ul>
+    <p class="footer-copy">
+      &copy; 2025 <span>Why Not Us?</span> Campaign &mdash; Designed to challenge stigma and start conversations.
+    </p>
+  </footer>
+
+</body>
+</html>
